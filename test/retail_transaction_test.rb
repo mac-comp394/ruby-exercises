@@ -4,9 +4,9 @@ require_relative "test_helper"
 
 describe RetailTransaction do
 
-  let(:tx) { RetailTransaction.new }
+  let(:tx) { RetailTransaction.new } #declaring a new retail transaction
 
-  it "starts in the “ringing up” state" do
+  it "starts in the “ringing up” state" do #setting the only the ringing up state to be true.
     assert_equal true,  tx.ringing_up?
     assert_equal false, tx.collecting_payment?
     assert_equal false, tx.processing_payment?
@@ -14,16 +14,16 @@ describe RetailTransaction do
     assert_equal false, tx.payment_declined?
   end
 
-  it "starts out empty" do
+  it "starts out empty" do #?
     assert_equal true, tx.empty?
   end
 
-  it "cannot check out if no items" do
+  it "cannot check out if no items" do #What is the assert_invalid_transition
     assert_invalid_transition { tx.check_out! }
   end
 
-  describe "still ringing up, with items" do
-    before(:each) { tx.add_item("broccoli") }
+  describe "still ringing up, with items" do #describe group logically related tests.
+    before(:each) { tx.add_item("broccoli") } #says it is running the tx all over again. Before means before we do that we add a broccoli?
 
     it "can add more items" do
       tx.add_item("roller skates")
@@ -48,7 +48,7 @@ describe RetailTransaction do
       tx.check_out!
     end
 
-    it "cannot add more items" do
+    it "cannot add more items" do #Don't really understand the job of assert_raises
       assert_raises do
         tx.add_item("roller skates")
       end
@@ -69,12 +69,12 @@ describe RetailTransaction do
   describe "processing payment" do
     before(:each) do
       tx.add_item("bobcat")
-      tx.check_out!
+      tx.check_out! #is this setting the check_out to true?
       tx.payment_info = "15 cents and a nail"
       tx.process_payment!
     end
 
-    it "cannot add more items" do
+    it "cannot add more items" do #what is the job of assert_raises in here?
       assert_raises do
         tx.add_item("roller skates")
       end
