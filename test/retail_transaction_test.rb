@@ -179,6 +179,7 @@ describe RetailTransaction do
       tx.refund!
     end
 
+
     it "cannot be refunded a second time" do
       assert_invalid_transition { tx.refund! }
     end
