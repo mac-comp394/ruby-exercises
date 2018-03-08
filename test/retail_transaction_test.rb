@@ -103,6 +103,10 @@ describe RetailTransaction do
       assert_equal false, tx.settled?
       assert_equal true,  tx.payment_declined?
     end
+
+    it "cannot be refunded" do
+      assert_invalid_transition{tx.refund!}
+    end
   end
 
   describe "with declined payment" do
@@ -138,6 +142,11 @@ describe RetailTransaction do
       assert_equal false, tx.payment_declined?
       assert_equal true,  tx.processing_payment?
     end
+
+    it "cannot be refunded" do
+      assert_invalid_transition{tx.refund!}
+    end
+
   end
 
   describe "that is settled" do
@@ -151,6 +160,32 @@ describe RetailTransaction do
 
     it "cannot be reopened" do
       assert_invalid_transition { tx.reopen! }
+    end
+
+    it "can be refunded" do
+      tx.refund!
+      assert_equal false, tx.settled?
+      assert_equal true,  tx.refunded?
+    end
+  end
+
+  describe "that is refunded" do
+    before(:each) do
+      tx.add_item("bobcat")
+      tx.check_out!
+      tx.payment_info = "15 cents and a nail"
+      tx.process_payment!
+      tx.payment_authorized!
+      tx.refund!
+    end
+
+
+    it "cannot be refunded a second time" do
+      assert_invalid_transition { tx.refund! }
+    end
+
+    it "cannot be reopened" do
+      assert_invalid_transition { tx.reopen! } 
     end
   end
 end
