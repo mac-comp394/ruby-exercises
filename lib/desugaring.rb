@@ -177,7 +177,7 @@ module DesugaringExercises
   #
   def desugared_operators(recipients, event, message)
     self.mail(message,
-      {:to=>recipients.map(){|x| x.email()},
+      {:to => recipients.map(){|x| x.email()},
       :subject => 
         (
           (
@@ -187,12 +187,15 @@ module DesugaringExercises
               " on "
               )
           ).+(
-          event.date().to_s()
+            event.date().to_s()
           )
         )
+      
       }
     )
   end
+
+  # =>, block {}, space in string, |x|
 
   # Compare that to the version at the top.
   #

@@ -169,13 +169,22 @@ describe RetailTransaction do
     end
   end
 
-  describe "refunded" do
+  describe "that is refunded" do
+    before(:each) do
+      tx.add_item("bobcat")
+      tx.check_out!
+      tx.payment_info = "15 cents and a nail"
+      tx.process_payment!
+      tx.payment_authorized!
+      tx.refund!
+    end
+
     it "cannot be refunded a second time" do
       assert_invalid_transition { tx.refund! }
     end
 
     it "cannot be reopened" do
-      assert_invalid_transition { tx.refund! } 
+      assert_invalid_transition { tx.reopen! } 
     end
   end
 end
