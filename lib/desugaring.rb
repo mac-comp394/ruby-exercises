@@ -21,7 +21,9 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_poetry(recipients, event, message)
-    implement_me!
+    mail(message,
+      to: recipients.map(&:email),
+      subject: "You’re invited to #{event.title} on #{event.date}")
   end
 
   # Ruby allows you to pass arguments identified by name instead of just by position. They are really just
@@ -36,7 +38,9 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_named_args(recipients, event, message)
-    implement_me!
+     mail(message,
+      {to: recipients.map(&:email),
+      subject: "You’re invited to #{event.title} on #{event.date}"})
   end
 
   # Ruby’s general syntax for hashes is `{key => value, key => value, ...}`. Because it is so common to use
@@ -51,7 +55,9 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_symbol_keys(recipients, event, message)
-    implement_me!
+    mail(message,
+      {:to => recipients.map(&:email),
+      :subject => "You’re invited to #{event.title} on #{event.date}"})
   end
 
   # You may be wondering how `map(&:email)` works. When you precede the last argument of a method call with
@@ -70,7 +76,9 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_attr_proc(recipients, event, message)
-    implement_me!
+    mail(message,
+      {:to => recipients.map { |x| x.email },
+      :subject => "You’re invited to #{event.title} on #{event.date}"})
   end
 
   # You may recall from the Ruby koans that when you put `#{something}` in a `"`-delimited string, Ruby will
@@ -88,7 +96,9 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_interpolation(recipients, event, message)
-    implement_me!
+    mail(message,
+      {:to => recipients.map { |x| x.email },
+      :subject =>  "You’re invited to " + event.title.to_s + " on " + event.date.to_s})
   end
 
   # Ruby tracks local variables lexically at compile time. Wherever you say `x = y`, the compiler assumes that
@@ -109,8 +119,13 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   # (Think: which names are local variables, and which are not?)
   #
+  
+  #method parameters: recipients, event, message
+  #block parameters: |x|
   def desugared_implicit_self(recipients, event, message)
-    implement_me!
+    self.mail(message,
+      {:to => recipients.map { |x| x.email },
+      :subject =>  "You’re invited to " + event.title.to_s + " on " + event.date.to_s})
   end
 
   # In Ruby, unlike Python, there are no properties distinct from method calls. When you say `x.y`, you are
@@ -131,7 +146,9 @@ module DesugaringExercises
   # but structurally quite similar!
   #
   def desugared_implicit_parens(recipients, event, message)
-    implement_me!
+    self.mail(message,
+      {:to => recipients.map() { |x| x.email() },
+      :subject =>  "You’re invited to " + event.title().to_s() + " on " + event.date().to_s()})
   end
 
   # In Ruby, every value is an object and every action is a method call. That includes operators. A binary
@@ -147,13 +164,15 @@ module DesugaringExercises
   #
   # Copy the contents of the previous method here and remove this sugar.
   #
-  # P.S. This one gets messy! Use line breaks and indentation to help.
+  # P.S. This one gets messy! Use line breaks and indentation to help. -- I didn't do this because I didn't feel like it was necessary!
   # P.P.S. Note that whitespace is syntactic sugar too.
   # P.P.P.S. For full credit on this one, note that addition is left-associative: the things on the left
   #   get added before the things on the right. (a + b + c) means ((a + b) + c), NOT (a + (b + c)).
   #
   def desugared_operators(recipients, event, message)
-    implement_me!
+    self.mail(message,
+      {:to => recipients.map() { |x| x.email() },
+	  :subject =>  ((("You’re invited to ".+(event.title().to_s())).+(" on ")).+(event.date().to_s()))})
   end
 
   # Compare that to the version at the top.
