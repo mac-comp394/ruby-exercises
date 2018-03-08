@@ -44,7 +44,7 @@ describe DesugaringExercises do
           }
         ],
         exercise.mail_calls.first,
-        "Wrong arguments passed to mail method")
+        "Wrong arguments passed to mail method on variant #{variant}")
     end
   end
 

@@ -173,17 +173,15 @@ describe RetailTransaction do
       tx.payment_info = "15 cents and a nail"
       tx.process_payment!
       tx.payment_authorized!
-      tx.refunded!
+      tx.refund!
+    end
 
     it "cannot be refunded again" do
       assert_invalid_transition { tx.refund! }
     end
-    
+
     it "cannot be reopned again" do
       assert_invalid_transition { tx.reopen! }
     end
-
   end
-
-
 end
