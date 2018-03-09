@@ -16,29 +16,21 @@ class Door
     end
   end
 
-  aasm :deadbolt_lock, namespace: :deadbolt do
-    state :unlocked, initial: true
-    state :locked
+  def self.generate_lock(lock_type)
+    aasm "#{lock_type}_lock".to_sym, namespace: lock_type.to_sym do
+      state :unlocked, initial: true
+      state :locked
 
-    event :lock_deadbolt do
-      transitions to: :locked
-    end
+      event "lock_#{lock_type}".to_sym do
+        transitions to: :locked
+      end
 
-    event :unlock_deadbolt do
-      transitions to: :unlocked
-    end
-  end
-
-  aasm :knob_lock, namespace: :knob do
-    state :unlocked, initial: true
-    state :locked
-
-    event :lock_knob do
-      transitions to: :locked
-    end
-
-    event :unlock_knob do
-      transitions to: :unlocked
+      event "unlock_#{lock_type}".to_sym do
+        transitions to: :unlocked
+      end
     end
   end
+
+["deadbolt", "knob"].each { |lock_type| generate_lock lock_type }
+
 end
