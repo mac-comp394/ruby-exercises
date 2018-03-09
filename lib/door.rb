@@ -17,15 +17,15 @@ class Door
   end
 
   def self.generate_lock(lock_type)
-    aasm (lock_type + "_lock").to_sym, namespace: lock_type.to_sym do
+    aasm "#{lock_type}_lock".to_sym, namespace: lock_type.to_sym do
       state :unlocked, initial: true
       state :locked
 
-      event ("lock_" + lock_type).to_sym do
+      event "lock_#{lock_type}".to_sym do
         transitions to: :locked
       end
 
-      event ("unlock_" + lock_type).to_sym do
+      event "unlock_#{lock_type}".to_sym do
         transitions to: :unlocked
       end
     end
