@@ -21,7 +21,9 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_poetry(recipients, event, message)
-    mail(message, to: recipients.map(&:email), subject: "You're invited to #{event.title} on #{event.date}")
+    mail(message,
+         to: recipients.map(&:email),
+         subject: "You’re invited to #{event.title} on #{event.date}")
   end
 
   # Ruby allows you to pass arguments identified by name instead of just by position. They are really just
@@ -36,7 +38,8 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_named_args(recipients, event, message)
-    mail(message, {to: recipients.map(&:email), subject: "You're invited to #{event.title} on #{event.date}"})
+    mail(message,
+         {to: recipients.map(&:email), subject: "You’re invited to #{event.title} on #{event.date}"})
   end
 
   # Ruby’s general syntax for hashes is `{key => value, key => value, ...}`. Because it is so common to use
@@ -51,7 +54,9 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_symbol_keys(recipients, event, message)
-    mail(message, {:to => recipients.map(&:email), :subject => "You're invited to #{event.title} on #{event.date}"})
+    mail(message,
+         {:to => recipients.map(&:email),
+          :subject => "You’re invited to #{event.title} on #{event.date}"})
 
   end
 
@@ -71,7 +76,7 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_attr_proc(recipients, event, message)
-    mail(message, {:to => recipients.map(&:email), :subject => "You're invited to #{event.title} on #{event.date}"})
+    mail(message, {:to => recipients.map{|x| x.email}, :subject => "You’re invited to #{event.title} on #{event.date}"})
 
   end
 
@@ -90,7 +95,7 @@ module DesugaringExercises
   # Copy the contents of the previous method here and remove this sugar.
   #
   def desugared_interpolation(recipients, event, message)
-    implement_me!
+    mail(message, {:to => recipients.map{|x| x.email}, :subject => "You’re invited to " + event.title.to_s + " on " + event.date.to_s})
   end
 
   # Ruby tracks local variables lexically at compile time. Wherever you say `x = y`, the compiler assumes that
@@ -112,7 +117,9 @@ module DesugaringExercises
   # (Think: which names are local variables, and which are not?)
   #
   def desugared_implicit_self(recipients, event, message)
-    implement_me!
+    self.mail(message,
+         {:to => recipients.map{|x| x.email},
+          :subject => "You’re invited to " + event.title.to_s + " on " + event.date.to_s})
   end
 
   # In Ruby, unlike Python, there are no properties distinct from method calls. When you say `x.y`, you are
@@ -133,7 +140,9 @@ module DesugaringExercises
   # but structurally quite similar!
   #
   def desugared_implicit_parens(recipients, event, message)
-    implement_me!
+    self.mail(message,
+              {:to => recipients.map(){|x| x.email()},
+               :subject => "You’re invited to " + event.title().to_s() + " on " + event.date().to_s()})
   end
 
   # In Ruby, every value is an object and every action is a method call. That includes operators. A binary
@@ -155,7 +164,10 @@ module DesugaringExercises
   #   get added before the things on the right. (a + b + c) means ((a + b) + c), NOT (a + (b + c)).
   #
   def desugared_operators(recipients, event, message)
-    implement_me!
+    #todo: finish this.
+    self.mail(message,
+              {:to => recipients.map(){|x| x.email()},
+               :subject => "You’re invited to ".+(event.title().to_s()).+(" on ").+(event.date().to_s())})
   end
 
   # Compare that to the version at the top.
