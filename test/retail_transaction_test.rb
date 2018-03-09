@@ -12,6 +12,7 @@ describe RetailTransaction do
     assert_equal false, tx.processing_payment?
     assert_equal false, tx.settled?
     assert_equal false, tx.payment_declined?
+    assert_equal false, tx.refunded?
   end
 
   it "starts out empty" do
@@ -20,6 +21,10 @@ describe RetailTransaction do
 
   it "cannot check out if no items" do
     assert_invalid_transition { tx.check_out! }
+  end
+
+  it "cannot refund if no items" do
+    assert_invalid_transition { tx.refund! }
   end
 
   describe "still ringing up, with items" do
@@ -138,6 +143,10 @@ describe RetailTransaction do
       assert_equal false, tx.payment_declined?
       assert_equal true,  tx.processing_payment?
     end
+
+    it "cannot be refunded" do
+      assert_invalid_transition { tx.refund! }
+    end
   end
 
   describe "that is settled" do
@@ -149,8 +158,38 @@ describe RetailTransaction do
       tx.payment_authorized!
     end
 
+
     it "cannot be reopened" do
       assert_invalid_transition { tx.reopen! }
     end
+
+    it "settled payment can be refunded" do
+      assert_equal true, tx.refund!
+      assert_equal true, tx.refunded?
+    end
+   end
+
+  describe "refunded orders" do
+    before( :each) do
+        tx.add_item("seahorse")
+        tx.check_out!
+        tx.payment_info = "2 gallons of maple syrup"
+        tx.process_payment!
+        tx.payment_authorized!
+        tx.refund!
+    end
+
+    it "refunded payment can not be reprocessed" do
+      assert_invalid_transition { tx.process_payment! }
+    end
+
+    it "refunded orders cannot be re-refunded" do
+      assert_invalid_transition { tx.refund! }
+    end
+
+    it "refunded orders cannot be re-opened" do
+      assert_invalid_transition { tx.check_out! }
+    end
+
   end
 end
