@@ -108,8 +108,6 @@ module DesugaringExercises
   #
   # Copy the contents of the previous method here and remove this sugar.
   # (Think: which names are local variables, and which are not?)
-  #
-  # TODO Confused on this one
   def desugared_implicit_self(recipients, event, message)
     self.mail(message, {:to => recipients.map { |x| x.email }, :subject => "You’re invited to " + event.title.to_s + " on " + event.date.to_s})
   end
@@ -152,10 +150,10 @@ module DesugaringExercises
   # P.P.S. Note that whitespace is syntactic sugar too.
   # P.P.P.S. For full credit on this one, note that addition is left-associative: the things on the left
   #   get added before the things on the right. (a + b + c) means ((a + b) + c), NOT (a + (b + c)).
-  #
-  # TODO unsure whether this one is fully complete 
   def desugared_operators(recipients, event, message)
-    self.mail(message,{:to=>recipients.map(){|x|x.email},:subject=>"You’re invited to ".+(event.title().to_s).+(" on ").+(event.date().to_s)})
+    self.mail(message,
+      {:to=>recipients.map(){|x|x.email},
+       :subject=>((("You’re invited to ".+(event.title().to_s)).+(" on ")).+(event.date().to_s))})
   end
 
   # Compare that to the version at the top.
