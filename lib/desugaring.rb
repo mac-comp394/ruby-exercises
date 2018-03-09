@@ -40,7 +40,7 @@ module DesugaringExercises
   def desugared_named_args(recipients, event, message)
     mail(message,
          {to: recipients.map(&:email),
-         subject: "You’re invited to #{event.title} on #{event.date}"})
+          subject: "You’re invited to #{event.title} on #{event.date}"})
   end
 
   # Ruby’s general syntax for hashes is `{key => value, key => value, ...}`. Because it is so common to use
@@ -120,8 +120,8 @@ module DesugaringExercises
   # (Think: which names are local variables, and which are not?)
   #
   def desugared_implicit_self(recipients, event, message)
-    # I tried this.mail() but it was an error so idk what that's about
-    mail(message,
+    # I had some trouble here because I instinctively kept writing this.mail() and wasn't sure why it wasn't working
+    self.mail(message,
               {:to => recipients.map{|x| x.email},
                :subject => "You’re invited to " + event.title + " on " + event.date})
   end
@@ -144,7 +144,7 @@ module DesugaringExercises
   # but structurally quite similar!
   #
   def desugared_implicit_parens(recipients, event, message)
-    mail(message,
+    self.mail(message,
               {:to => recipients.map{|x| x.email()},
                :subject => "You’re invited to " + event.title() + " on " + event.date()})
   end
@@ -168,7 +168,7 @@ module DesugaringExercises
   #   get added before the things on the right. (a + b + c) means ((a + b) + c), NOT (a + (b + c)).
   #
   def desugared_operators(recipients, event, message)
-    mail(message,
+    self.mail(message,
          {:to => recipients.map{|x| x.email()},
           :subject => "You’re invited to ".+(event.title()).+(" on ").+(event.date())})
   end
