@@ -97,11 +97,34 @@ describe RetailTransaction do
       assert_equal false, tx.payment_declined?
     end
 
+    
+
     it "can handle payment declined" do
       tx.payment_declined!
       assert_equal false, tx.processing_payment?
       assert_equal false, tx.settled?
       assert_equal true,  tx.payment_declined?
+    end
+
+    it "declined payment cannot be refunded" do
+      assert_invalid_transition{tx.refund!}
+    end
+
+
+  end
+
+  describe "with settled payment" do
+    before(:each) do
+      tx.add_item("bobcat")
+      tx.check_out!
+      tx.payment_info = "15 cents and a nail"
+      tx.process_payment!
+      tx.payment_authorized!
+    end
+
+    it "settled payment can be refunded" do
+      tx.refund!
+      assert_equal true, tx.refunded?
     end
   end
 
@@ -112,6 +135,10 @@ describe RetailTransaction do
       tx.payment_info = "15 cents and a nail"
       tx.process_payment!
       tx.payment_declined!
+    end
+
+    it "cannot refund declined payments" do
+      assert_invalid_transition{tx.refund!}
     end
 
     it "cannot add more items" do
@@ -132,6 +159,7 @@ describe RetailTransaction do
       assert_equal true,  tx.processing_payment?
     end
 
+
     it "can change payment info" do
       tx.payment_info = "15 cents and a nail and the shell of a great great great grandfather snail"
       tx.process_payment!
@@ -151,6 +179,25 @@ describe RetailTransaction do
 
     it "cannot be reopened" do
       assert_invalid_transition { tx.reopen! }
+    end
+  end
+
+  describe "that is refunded" do
+    before(:each) do
+      tx.add_item("bobcat")
+      tx.check_out!
+      tx.payment_info = "15 cents and a nail"
+      tx.process_payment!
+      tx.payment_authorized!
+      tx.refund!
+    end
+
+    it "cannot be refunded a second time" do
+      assert_invalid_transition {tx.refund!}
+    end
+
+    it "cannot be reopened" do
+      assert_invalid_transition {tx.reopen!}
     end
   end
 end
