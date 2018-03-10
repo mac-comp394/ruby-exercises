@@ -164,6 +164,7 @@ describe RetailTransaction do
         assert_invalid_transition { tx.reopen! }
       end
 
+    # No. 1: check if can be refunded?
       it "can be refunded" do
         tx.refund!
         assert_equal false, tx.settled?
@@ -171,8 +172,11 @@ describe RetailTransaction do
       end
   end
 
+  describe "refunded" do # No 3. describe group for orders already refunded/in refund state
+    # No. 4 Cannot be refunded for second time
     it "cannot be refunded a second time" do
       assert_invalid_transition {tx. refund! }
+  end
 
     # No. 5 Refunded cannot be reopened, same as settled
     it "cannot be reopened" do
@@ -183,6 +187,7 @@ describe RetailTransaction do
 
   # Refund tests
   # 1. Test that ensures a settled order can be refunded
+  # 2. Add tests to one or two other states that ensure they cannot be refunded
   # 3. New describe group for orders that are already refunded
   # 4. Test transactions cannot be refunded a second time
   # 5. Test a refunded order cannot be reopened
