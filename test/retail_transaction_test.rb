@@ -180,7 +180,7 @@ describe RetailTransaction do
 
     # No. 5 Refunded cannot be reopened, same as settled
     it "cannot be reopened" do
-      assert_invalid_transition { tx.refund! }
+      assert_invalid_transition { tx.reopen! }
     end
 
   end
