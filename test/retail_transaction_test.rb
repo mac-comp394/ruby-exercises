@@ -103,6 +103,11 @@ describe RetailTransaction do
       assert_equal false, tx.settled?
       assert_equal true,  tx.payment_declined?
     end
+
+    # No. 2 - ensure can't be refunded
+    it "cannot be refunded" do
+      assert_invalid_transition{ tx.refund! }
+    end
   end
 
   describe "with declined payment" do
@@ -112,6 +117,11 @@ describe RetailTransaction do
       tx.payment_info = "15 cents and a nail"
       tx.process_payment!
       tx.payment_declined!
+    end
+
+    # No. 2 - ensure can't be refunded
+    it "cannot be refunded" do
+      assert_invalid_transition{ tx.refund! }
     end
 
     it "cannot add more items" do
@@ -149,8 +159,31 @@ describe RetailTransaction do
       tx.payment_authorized!
     end
 
-    it "cannot be reopened" do
-      assert_invalid_transition { tx.reopen! }
-    end
+    # Settled cannot be reopened
+      it "cannot be reopened" do
+        assert_invalid_transition { tx.reopen! }
+      end
+
+      it "can be refunded" do
+        tx.refund!
+        assert_equal false, tx.settled?
+        assert_equal true, tx.refunded?
+      end
   end
+
+    it "cannot be refunded a second time" do
+      assert_invalid_transition {tx. refund! }
+
+    # No. 5 Refunded cannot be reopened, same as settled
+    it "cannot be reopened" do
+      assert_invalid_transition { tx.refund! }
+    end
+
+  end
+
+  # Refund tests
+  # 1. Test that ensures a settled order can be refunded
+  # 3. New describe group for orders that are already refunded
+  # 4. Test transactions cannot be refunded a second time
+  # 5. Test a refunded order cannot be reopened
 end
