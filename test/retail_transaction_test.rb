@@ -24,7 +24,6 @@ describe RetailTransaction do
 
   describe "still ringing up, with items" do
     before(:each) { tx.add_item("broccoli") }
-
     it "can add more items" do
       tx.add_item("roller skates")
     end
@@ -86,6 +85,10 @@ describe RetailTransaction do
       end
     end
 
+    it "cannot be refunded while payment is processing" do
+      assert_invalid_transition { tx.refund! }
+    end
+
     it "cannot re-process payment" do
       assert_invalid_transition { tx.process_payment! }
     end
@@ -120,6 +123,10 @@ describe RetailTransaction do
       end
     end
 
+    it "cannot be refunded with declined payment" do
+      assert_invalid_transition { tx.refund! }
+    end
+
     it "can reopen and add more items" do
       tx.reopen!
       assert_equal true, tx.ringing_up?
@@ -150,6 +157,30 @@ describe RetailTransaction do
     end
 
     it "cannot be reopened" do
+      assert_invalid_transition { tx.reopen! }
+    end
+
+    it "can be refunded" do
+      tx.refund!
+      assert_equal true, tx.refunded?
+    end
+  end
+
+  describe "group for orders that are already refunded" do
+    before(:each) do
+      tx.add_item("bobcat")
+      tx.check_out!
+      tx.payment_info = "15 cents and a nail"
+      tx.process_payment!
+      tx.payment_authorized!
+      tx.refund!
+    end
+
+    it "cannot be refunded again" do
+      assert_invalid_transition { tx.refund! }
+    end
+
+    it "cannot be reopned again" do
       assert_invalid_transition { tx.reopen! }
     end
   end
